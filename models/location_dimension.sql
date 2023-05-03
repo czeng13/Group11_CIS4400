@@ -10,9 +10,9 @@ row_number() OVER () AS location_dim_id, *
 
 FROM (
 
-SELECT DISTINCT incident_zip AS zipcode, incident_address,
+SELECT DISTINCT incident_zip, incident_address,
                                 city, 
-                                community_board AS community_district,
+                                community_board,
                                 bbl,
                                 borough,
                                 location_type

@@ -2,33 +2,32 @@
 config(
     materialized='table'
 )
-
 }}
 
 WITH agency_dimension AS
 (
-    SELECT * FROM `group-11-cis-4400.dbt_czeng13.agency_dimension`
+    SELECT * FROM {{ ref('agency_dimension') }}
 ),
 
 complaint_type_dimension AS
 (
-    SELECT * FROM `group-11-cis-4400.dbt_czeng13.complaint_type_dimension`
+    SELECT * FROM {{ ref('complaint_type_dimension')}}
 ),
 
 location_dimension AS
 (
-    SELECT * FROM `group-11-cis-4400.dbt_czeng13.location_dimension`
+    SELECT * FROM {{ ref('location_dimension') }}
 ),
 
 date_dimension AS
 (
-    SELECT * FROM `group-11-cis-4400.dbt_czeng13.date_dimension`
+    SELECT * FROM {{ ref('date_dimension') }}
 ),
 
 all_complaints AS
 (
-    SELECT * FROM `group-11-cis-4400.dbt_czeng13.src_311_complaints`
-),
+    SELECT * FROM {{ ref('src_311_complaints') }}
+)
 
 SELECT ad.agency_dim_id, 
         ctd.complaint_type_dim_id, 
@@ -45,6 +44,11 @@ INNER JOIN complaint_type_dimension ctd
 USING (complaint_type, descriptor)
 
 INNER JOIN location_dimension ld
-USING (city, incident_address, bbl, community_board, borough, location_type, incident_zip)
+USING (incident_zip, incident_address,
+                                city, 
+                                community_board,
+                                bbl,
+                                borough,
+                                location_type)
 
 INNER JOIN date_dimension dd ON EXTRACT(DATE FROM ac.created_date) = dd.full_date
